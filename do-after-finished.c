@@ -13,15 +13,15 @@
 #ifdef __amd64__
 //on 64-bit PC, use raw system calls in main loop to minimize cache overhead of polling to the lowest possible amount
 inline static long syscall2(const long callnumber,const long arg1,const long arg2){
-	register long *number asm ("rax") = callnumber;
-	register long *one asm ("rdi") = arg1;
-	register long *two asm ("rsi") = arg2;
-	asm volatile ("syscall"
-		: "=r" (number)
-		: "r" (number),"r"(one),"r"(two)
-		: "rcx","r8","r9","r11","rdx","r10"
-	);
-	return number;
+  register long *number asm ("rax") = callnumber;
+  register long *one asm ("rdi") = arg1;
+  register long *two asm ("rsi") = arg2;
+  asm volatile ("syscall"
+    : "=r" (number)
+    : "r" (number),"r"(one),"r"(two)
+    : "rcx","r8","r9","r11","rdx","r10"
+  );
+  return number;
 }
 #endif
 
@@ -57,18 +57,18 @@ static long our_strtol(char *str){
 }
 
 int main(const int argc,char *argv[]){
-	if (argc < 5)
+  if (argc < 5)
     return showusage();
     
-	const long polldelay_l = our_strtol(*++argv);
+  const long polldelay_l = our_strtol(*++argv);
   if (polldelay_l < 0)
     return showusage();
-	const struct timespec polldelay = {(time_t)polldelay_l,100000000};
+  const struct timespec polldelay = {(time_t)polldelay_l,100000000};
   
   const long afterdelay_l = our_strtol(*++argv);
   if (afterdelay_l < 0)
     return showusage();
-	const struct timespec afterdelay = {(time_t)afterdelay_l,100000000};
+  const struct timespec afterdelay = {(time_t)afterdelay_l,100000000};
     
   const long pid = our_strtol(*++argv);
   if (pid < 0) 
@@ -79,14 +79,15 @@ int main(const int argc,char *argv[]){
   printf("ready to run %s %li seconds after process %li has finished; checking every %li seconds\a\n",command,afterdelay.tv_sec,pid,polldelay.tv_sec);
 
   //main loop
-	while (test_pid(pid) != ESRCH) {
-		our_sleep(&polldelay);
-	}
+  while (test_pid(pid) != ESRCH) {
+    our_sleep(&polldelay);
+  }
 
-	printf("process %li has finished; %s is ready to run in %li seconds\a\n",pid,command,afterdelay.tv_sec);
-	our_sleep(&afterdelay);
-	execvp(command,argv);
+  printf("process %li has finished; %s is ready to run in %li seconds\a\n",pid,command,afterdelay.tv_sec);
+  our_sleep(&afterdelay);
+  execvp(command,argv);
   
-	printf("failed to execute %s!", command);
-	return 2;
+  printf("failed to execute %s!", command);
+  return 2;
 }
+
