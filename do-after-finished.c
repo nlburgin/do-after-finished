@@ -7,6 +7,7 @@
 #include <time.h>
 #include <signal.h>
 #include <string.h>
+#include <math.h>
 
 //usage: do-after-finished polldelay afterdelay command
 
@@ -44,6 +45,23 @@ inline static void our_sleep(const struct timespec *seconds){
 
 inline static int showusage() {fputs("usage: do-after-finished polldelay afterdelay PID command [arg]...\n",stderr); return 1;}
 
+
+static struct timespec parse_time(char *str){
+  if (strcmp(str,"0") == 0 || strcmp(str,"0.0") == 0){
+    const struct timespec retval = {0,100000000};
+    return retval;
+  } 
+  const double dtime = strtod(str,NULL);
+  if (dtime == 0.0){
+    const struct timespec retval = {0,-1}; //this designates an error
+    return retval;
+  }
+  double dint = 0.0;
+  const double dfract = modf(dtime,&dint);
+  const struct timespec retval = {(time_t)dint,(long)(dfract * 1000000000.0)};
+  return retval;
+}
+
 //unlike regular strtol, returns -1 on error.
 static long our_strtol(char *str){
   if (strcmp(str,"0") == 0)
@@ -60,15 +78,13 @@ int main(const int argc,char *argv[]){
   if (argc < 5)
     return showusage();
     
-  const long polldelay_l = our_strtol(*++argv);
-  if (polldelay_l < 0)
+  const struct timespec polldelay = parse_time(*++argv);
+  if (polldelay.tv_nsec < 0)
     return showusage();
-  const struct timespec polldelay = {(time_t)polldelay_l,100000000};
   
-  const long afterdelay_l = our_strtol(*++argv);
-  if (afterdelay_l < 0)
+  const struct timespec afterdelay = parse_time(*++argv);
+  if (afterdelay.tv_nsec < 0)
     return showusage();
-  const struct timespec afterdelay = {(time_t)afterdelay_l,100000000};
     
   const long pid = our_strtol(*++argv);
   if (pid < 0) 
