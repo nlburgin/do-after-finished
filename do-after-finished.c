@@ -75,38 +75,41 @@ static long our_strtol(char *str){
 }
 
 int main(const int argc,char *argv[]){
+  
+  char **argv2 = argv;
+
   if (argc < 5)
     return showusage();
     
-  const struct timespec polldelay = parse_time(*++argv);
+  const struct timespec polldelay = parse_time(*++argv2);
   if (polldelay.tv_nsec < 0)
     return showusage();
   
-  const struct timespec afterdelay = parse_time(*++argv);
+  const struct timespec afterdelay = parse_time(*++argv2);
   if (afterdelay.tv_nsec < 0)
     return showusage();
     
-  const long pid = our_strtol(*++argv);
+  const long pid = our_strtol(*++argv2);
   if (pid < 0) 
     return showusage();
   
-  const char *command = *++argv;
+  const char *command = *++argv2;
   
   if (test_pid(pid) == ESRCH){
     fprintf(stderr,"process %li doesn't exist to begin with. aborting...\n",pid);
     return 2;
   }
   
-  fprintf(stderr,"ready to run %s %li seconds after process %li has finished; checking every %li seconds\a\n",command,afterdelay.tv_sec,pid,polldelay.tv_sec);
+  fprintf(stderr,"ready to run %s %s seconds after process %li has finished; checking every %s seconds\a\n",command,argv[2],pid,argv[1]);
 
   //main loop
   while (test_pid(pid) != ESRCH) {
     our_sleep(&polldelay);
   }
 
-  fprintf(stderr,"process %li has finished; %s is ready to run in %li seconds\a\n",pid,command,afterdelay.tv_sec);
+  fprintf(stderr,"process %li has finished; %s is ready to run in %s seconds\a\n",pid,command,argv[2]);
   our_sleep(&afterdelay);
-  execvp(command,argv);
+  execvp(command,argv2);
   
   fprintf(stderr,"failed to execute %s!", command);
   return 3;
