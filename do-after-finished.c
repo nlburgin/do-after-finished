@@ -76,6 +76,11 @@ int main(const int argc,char *argv[]){
   
   const char *command = *++argv;
   
+  if (test_pid(pid) == ESRCH){
+    printf("process %li doesn't exist to begin with. aborting...\n",pid);
+    return 2;
+  }
+  
   printf("ready to run %s %li seconds after process %li has finished; checking every %li seconds\a\n",command,afterdelay.tv_sec,pid,polldelay.tv_sec);
 
   //main loop
@@ -88,6 +93,5 @@ int main(const int argc,char *argv[]){
   execvp(command,argv);
   
   printf("failed to execute %s!", command);
-  return 2;
+  return 3;
 }
-
