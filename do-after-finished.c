@@ -42,7 +42,7 @@ inline static void our_sleep(const struct timespec *seconds){
 #endif
 }
 
-inline static int showusage() {puts("usage: do-after-finished polldelay afterdelay PID command [arg]..."); return 1;}
+inline static int showusage() {fputs("usage: do-after-finished polldelay afterdelay PID command [arg]...\n",stderr); return 1;}
 
 //unlike regular strtol, returns -1 on error.
 static long our_strtol(char *str){
@@ -77,21 +77,21 @@ int main(const int argc,char *argv[]){
   const char *command = *++argv;
   
   if (test_pid(pid) == ESRCH){
-    printf("process %li doesn't exist to begin with. aborting...\n",pid);
+    fprintf(stderr,"process %li doesn't exist to begin with. aborting...\n",pid);
     return 2;
   }
   
-  printf("ready to run %s %li seconds after process %li has finished; checking every %li seconds\a\n",command,afterdelay.tv_sec,pid,polldelay.tv_sec);
+  fprintf(stderr,"ready to run %s %li seconds after process %li has finished; checking every %li seconds\a\n",command,afterdelay.tv_sec,pid,polldelay.tv_sec);
 
   //main loop
   while (test_pid(pid) != ESRCH) {
     our_sleep(&polldelay);
   }
 
-  printf("process %li has finished; %s is ready to run in %li seconds\a\n",pid,command,afterdelay.tv_sec);
+  fprintf(stderr,"process %li has finished; %s is ready to run in %li seconds\a\n",pid,command,afterdelay.tv_sec);
   our_sleep(&afterdelay);
   execvp(command,argv);
   
-  printf("failed to execute %s!", command);
+  fprintf(stderr,"failed to execute %s!", command);
   return 3;
 }
