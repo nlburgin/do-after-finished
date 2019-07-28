@@ -11,8 +11,9 @@
 
 //usage: do-after-finished polldelay afterdelay command
 
-#ifdef __amd64__
 //on 64-bit PC, use raw system calls in main loop to minimize cache overhead of polling to the lowest possible amount
+
+#ifdef __amd64__
 inline static long syscall2(const long callnumber,const long arg1,const long arg2){
   register long *number asm ("rax") = callnumber;
   register long *one asm ("rdi") = arg1;
@@ -42,6 +43,9 @@ inline static void our_sleep(const struct timespec *seconds){
   nanosleep(seconds,NULL);
 #endif
 }
+
+//stuff outside the main loop just uses regular library calls
+
 
 inline static int showusage() {fputs("usage: do-after-finished polldelay afterdelay PID command [arg]...\n",stderr); return 1;}
 
@@ -74,6 +78,13 @@ static long our_strtol(char *str){
     return retval;
 }
 
+//returns zero if command exists, nonzero otherwise
+static int check_command_exists(const char *command){
+  char buf[128];
+  snprintf(buf,128,"command -v %s >/dev/null",command);
+  return system(buf);
+}
+
 int main(const int argc,char *argv[]){
   
   char **argv2 = argv;
@@ -92,12 +103,15 @@ int main(const int argc,char *argv[]){
   const long pid = our_strtol(*++argv2);
   if (pid < 0) 
     return showusage();
-  
-  const char *command = *++argv2;
-  
   if (test_pid(pid) == ESRCH){
     fprintf(stderr,"process %li doesn't exist to begin with. aborting...\n",pid);
     return 2;
+  }
+  
+  const char *command = *++argv2;
+  if(check_command_exists(command) != 0){
+    fprintf(stderr,"error: command %s seems to not exist\n",command);
+    return 3;
   }
   
   fprintf(stderr,"ready to run %s %s seconds after process %li has finished; checking every %s seconds\a\n",command,argv[2],pid,argv[1]);
@@ -111,6 +125,6 @@ int main(const int argc,char *argv[]){
   our_sleep(&afterdelay);
   execvp(command,argv2);
   
-  fprintf(stderr,"failed to execute %s!", command);
-  return 3;
+  fprintf(stderr,"failed to execute %s!\n", command);
+  return 4;
 }
