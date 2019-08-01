@@ -66,18 +66,6 @@ static struct timespec parse_time(char *str){
   return retval;
 }
 
-//unlike regular strtol, returns -1 on error.
-static long our_strtol(char *str){
-  if (strcmp(str,"0") == 0)
-    return 0;
-  
-  const long retval = strtol(str,NULL,10);
-  if (retval == 0)
-    return -1;
-  else 
-    return retval;
-}
-
 //returns zero if command exists, nonzero otherwise
 static int check_command_exists(const char *command){
   char buf[128];
@@ -100,8 +88,8 @@ int main(const int argc,char *argv[]){
   if (afterdelay.tv_nsec < 0)
     return showusage();
     
-  const long pid = our_strtol(*++argv2);
-  if (pid < 0) 
+  const long pid = strtol(*++argv2,NULL,10);
+  if (pid == 0) 
     return showusage();
   if (test_pid(pid) == ESRCH){
     fprintf(stderr,"process %li doesn't exist to begin with. aborting...\n",pid);
