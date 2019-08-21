@@ -48,3 +48,18 @@ the beep-delay argument sets the interval in seconds between beeps; it should ge
 It may be either used standalone, or combined with `do-after-finish` (typically using a `0` pre-delay argument in that case) to sound the alarm after a process exits. 
 
 Note that `do-after-finish` already emits a bell character when the watched process ends, which could be attained as the sole effect by running a dummy command like `/bin/true`, however in that case the alarm only sounds once and does not repeat.
+
+## Alarm Clock
+
+Alarmclock.sh is a wrapper script around the alarm command. It sets an alarm for a time specified in the first (only) argument, which is formatted according to the `date (1)` command.
+
+For example, this was run at 3:07 PM
+
+```
+$ alarmclock.sh '3:08PM'
+alarm set for '3:08PM' (19 seconds from now)
+```
+
+And the beeping indeed commenced in 19 seconds.
+
+
