@@ -39,7 +39,7 @@ zero repetitions means beep infinitely
 ```
 It uses basically the same build command.
 
-It uses the bell character `U+0007` and requires a terminal with audible bell support. Depending on the terminal's implementation, the sound may come either by beeping the PC speaker or by playing a chime through the general-purpose sound driver. In the latter case, it of course will require a speaker to be connected which is turned on and not muted.
+It uses the bell character `U+0007` and needs to be run from a terminal that has audible bell support. Depending on the terminal's implementation, the sound may come either by beeping the PC speaker or by playing a chime through the general-purpose sound driver. In the latter case, it of course will require a speaker to be connected which is turned on and not muted.
 
 the beep-delay argument sets the interval in seconds between beeps; it should generally be set to lower values (e.g. between 0.25 and 1) to things that need urgent attention, and higher values (e.g. between 10 and 60) for things that are less urgent.
 
