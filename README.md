@@ -41,8 +41,12 @@ It uses basically the same build command:
 
 `$ gcc -O3 -fwhole-program -march=native -Wno-error -o alarm alarm.c; strip alarm`
 
-It uses the bell character `U+0007` and needs to be run from a terminal that has audible bell support. Depending on the terminal's implementation, the sound may come either by beeping the PC speaker or by playing a chime through the general-purpose sound driver. In the latter case, it of course will require a speaker to be connected which is turned on and not muted.
+It uses the bell character `U+0007` and needs to be run from a terminal that has audible bell support (which is also used by do-after-finished
+
+Depending on the terminal's implementation, the sound may come either by beeping the PC speaker or by playing a chime through the general-purpose sound driver. In the latter case, it of course will require a speaker to be connected which is turned on and not muted.
 
 the beep-delay argument sets the interval in seconds between beeps; it should generally be set to lower values (e.g. between 0.25 and 1) to things that need urgent attention, and higher values (e.g. between 10 and 60) for things that are less urgent.
 
-It may be either used standalone, or combined with `do-after-finish` (typically using a `0` pre-delay argument in that case) to sound the alarm after a process exits.
+It may be either used standalone, or combined with `do-after-finish` (typically using a `0` pre-delay argument in that case) to sound the alarm after a process exits. 
+
+Note that `do-after-finish` already emits a bell character when the watched process ends, which could be attained as the sole effect by running a dummy command like `/bin/true`, however in that case the alarm only sounds once and does not repeat.
