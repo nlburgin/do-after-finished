@@ -31,13 +31,15 @@ This is tested on GCC/Linux. Clang/Freebsd is not tested and may or may not work
 
 ## Alarm command
 
-Alarm.c is a similar program that simply sounds an alarm when the time is up.
+`alarm` is a similar program that simply sounds an alarm when the time is up.
 
 ```
 usage: alarm pre-delay beep-delay repetitions
 zero repetitions means beep infinitely
 ```
-It uses basically the same build command.
+It uses basically the same build command:
+
+`$ gcc -O3 -fwhole-program -march=native -Wno-error -o alarm alarm.c; strip alarm`
 
 It uses the bell character `U+0007` and needs to be run from a terminal that has audible bell support. Depending on the terminal's implementation, the sound may come either by beeping the PC speaker or by playing a chime through the general-purpose sound driver. In the latter case, it of course will require a speaker to be connected which is turned on and not muted.
 
