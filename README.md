@@ -62,4 +62,14 @@ alarm set for '3:08PM' (19 seconds from now)
 
 And the beeping indeed commenced in 19 seconds.
 
+### alarmclock-cron
+There is a variant of the wrapper script that runs a command instead of beeping infinitely. It has different semantics to do-after-finished; it accepts any shell expression, which is passed as a single argument (so the command should be in quotes)
 
+
+```
+$ alarmclock-cron "1:40:59PM" 'echo lol; echo nope'
+alarm clock is going to run echo lol; echo nope at '1:40:59PM' (4 seconds from now)
+lol
+nope
+
+```
