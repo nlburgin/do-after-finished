@@ -13,7 +13,7 @@ command: command to be run
 
 [arg]... additional arguments are the arguments for the command
 
-It's meant to be used to schedule a command to be run after the completion of a long-running batch process that's already started. 
+It's meant to be used to schedule a command to be run after the completion of a long-running batch process that's already started. Its semantics for the arguments of the run command is similar to `nice` or `sudo`, meaning that the command should *not* be grouped into a quoted string with its arguments; they should be separate tokens on the shell.
 
 For example, say you want to leave your computer with an ffmpeg encode already running, then turn it off after the encode finishes. As long as there's only one process named FFMPEG running, you could use the command:
 
@@ -63,7 +63,7 @@ alarm set for '3:08PM' (19 seconds from now)
 And the beeping indeed commenced in 19 seconds.
 
 ### alarmclock-cron
-There is a variant of the wrapper script that runs a command instead of beeping infinitely. It has different semantics to do-after-finished; it accepts any shell expression, which is passed as a single argument (so the command should be in quotes)
+There is a variant of the wrapper script that runs a command instead of beeping infinitely. It has different semantics to `do-after-finished`; it accepts any shell expression, which is passed as a single argument (so the command must be grouped with its args as a quoted string)
 
 
 ```
