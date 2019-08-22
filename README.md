@@ -67,7 +67,7 @@ There is a variant of the wrapper script that runs a command instead of beeping 
 
 
 ```
-$ alarmclock-cron "1:40:59PM" 'echo lol; echo nope'
+$ alarmclock-cron.sh "1:40:59PM" 'echo lol; echo nope'
 alarm clock is going to run echo lol; echo nope at '1:40:59PM' (4 seconds from now)
 lol
 nope
