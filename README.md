@@ -1,6 +1,8 @@
 # do-after-finished
 Linux program to run a command after a process exits
 
+And a dumping ground for some other vaguely related code
+
 usage: `do-after-finished polldelay afterdelay PID command [arg]...`
 
 polldelay: how often (in seconds) to check if the process is finished. If set to zero, it will poll 10 times per second.
